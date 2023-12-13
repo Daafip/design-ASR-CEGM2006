@@ -211,14 +211,17 @@ class Model(DartsModel):
             self.reservoir.add_perforation(well_name="PROD", cell_index=(self.nx, 1, 1), multi_segment=False)
         else:
             # Perforate the left and right boundary:
-            # for ii in range(int(self.ny / 2)):
-            #     self.reservoir.add_well("INJ_WAT_" + str(ii + 1))
-            #     self.reservoir.add_perforation(well=self.reservoir.wells[-1], i=1, j=1, k=ii + 1, multi_segment=False)
-            #
-            # for ii in range(int(self.ny / 2), self.ny):
-            #     self.reservoir.add_well("INJ_GAS_" + str(ii + 1))
-            #     self.reservoir.add_perforation(well=self.reservoir.wells[-1], i=1, j=1, k=ii + 1,
-            #                                    multi_segment=False)
+            
+            self.reservoir.add_well("INJ_WAT")
+            for ii in range(int(self.ny / 2)):
+                
+                self.reservoir.add_perforation(well_name=self.reservoir.wells[-1].name, cell_index=(1, 1, ii + 1), multi_segment=False)
+
+            self.reservoir.add_well("INJ_GAS")
+            for ii in range(int(self.ny / 2), self.ny):
+                
+                self.reservoir.add_perforation(well_name=self.reservoir.wells[-1].name, cell_index=(1, 1, ii + 1),
+                                               multi_segment=False)
 
             self.reservoir.add_well("PROD_" + str(1))
             for ii in range(self.ny):
@@ -238,7 +241,7 @@ class Model(DartsModel):
 
         if len(self.map) > 0:
             nc = self.physics.nc
-            nb = self.reservoir.nb
+            nb = self.reservoir.mesh.n_res_blocks
             composition = np.array(self.reservoir.mesh.composition, copy=False)
             zc = np.zeros(nb)
             for i in range(nc-1):
