@@ -9,6 +9,7 @@ import imageio
 import IPython
 import scipy
 from tqdm import tqdm
+import warnings
 
 def run_gw_model(loss_factor, params,return_rec_eff=False):
     gwt, gwf, sim, Q_d, Q, d_injecting, cf, t_begin_index, t_end_index, ncol, nstepin,nstepout, cs, climit, tin =\
@@ -32,6 +33,7 @@ def run_gw_model(loss_factor, params,return_rec_eff=False):
     c_prev = cs
     
     lst_Q_in = []
+    warnings.simplefilter("ignore") # warning in tqdm
     for index_cycle in tqdm(cycle_n):
         # initial condition from prev time period
         gwt_ic = fp.mf6.ModflowGwtic(model=gwt, 
