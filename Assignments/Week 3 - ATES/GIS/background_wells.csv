@@ -1,7 +1,0 @@
-installatie_id;putnummer;status_put;status_instal;type;Capacity_TJ;pompcapaciteit_m3/h;maxhoeveelheidm3ontrekking_p/j;X;Y;inrichting_nummer;GlobalID;
-37871;KOUDE BRON;In Gebruik;In Gebruik;OBES;2;;;96600;437010;37871;62be096c-19f9-4a7c-9b26-d3e53d72b6b2;
-35086;Monobron;In Gebruik;In Gebruik;OBES;2;;;97650;436800;35086;6ac7de4b-30eb-41ab-8898-1c2baee74e2e;
-36626;WARM 2;In Gebruik;In Gebruik;OBES;2;;;96461;436990;36626;3cad4617-b5fb-4fa6-9b96-0ee01c3d75aa;
-36626;KOUD 1;In Gebruik;In Gebruik;OBES;1;;;96450;437132;36626;50ebaf54-8fda-44d5-870e-d1b80b86930c;
-36626;KOUD 2;In Gebruik;In Gebruik;OBES;1;;;96461;437165;36626;91bcfb28-a567-4820-a5fe-3e33eff0a7b4;
-52147;WARME BRON (MONOBRON);In Gebruik;In Gebruik;OBES;2;;;99530;437460;52147;0344b4b6-1199-4334-a821-8f74b6e3e6ce;
