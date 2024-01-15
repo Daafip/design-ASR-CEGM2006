@@ -36,5 +36,5 @@ when the extracted volume is smaller.
 
 ## running code
 Advised to work in an anaconda environment with jupyter lab to run notebooks. 
-Use `pip install flopy` to obtain the (FloPy)[https://github.com/avaframe/FlowPy] package. 
-The executable of modflow 6 is provided, strictly this should only be distribued by the USGS itself so get it (there)[https://water.usgs.gov/water-resources/software/MODFLOW-6/]. _Only in this repo to make sharing easier_. 
+Use `pip install flopy` to obtain the [FloPy](https://github.com/avaframe/FlowPy) package. 
+The executable of modflow 6 is provided, strictly this should only be distribued by the USGS itself so get it [there](https://water.usgs.gov/water-resources/software/MODFLOW-6/). _Only in this repo to make sharing easier_. 
