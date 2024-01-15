@@ -1,5 +1,23 @@
-# design-ASR-CEGM2006
- for designing an ASR system for the course CEGM2006
+# design of an Aquifer Storage Recharge (ASR) system TUDelft CEGM2006
+Designing an ASR system for the cross over course Subsurface storage for climate, energy and water course (CEGM2006)
+# Explanation of repo
+
+- `bin` contains required moflow6 executable.
+- `Model` contains all the code.
+    - `basic_model*.ipynb` contains the initial model created, the two versions contain slightly different versions - makes working together with git easier.
+    - `changes_injection_scheme.ipynb` contains the code when injection scheme was altered to cater for the design requirements.
+    - `vary_kh_test_injection.ipynb` is the start of the sensitivity analysis. As this was slower in notebook, this was also implemented in a `.py` files.
+    - `vary_params.py` code to perform sensitivity analysis of hydraulic conductivity, porosity and coefficient of logitudinal dispersivity. 
+    - `worstcase*.ipynb` contains a variation on the basic model but in the worst case as a result of the sensitivity analysis
+    - `optimise_gw_model.py` used to optimise injection scheme the worst case, proved to be easier using seperate `.py` function. _Could_ optimise by adding this back in basic model. 
+- `Sources` contains pdfs of papers used (please cite correctly).
+- `Documents` contain initial workplan, final presentation and final report.
+
+## running code
+Advised to work in an anaconda environment with jupyter lab to run notebooks. 
+Use `pip install flopy` to obtain the [FloPy](https://github.com/avaframe/FlowPy) package. 
+The executable of modflow 6 is provided, strictly this should only be distribued by the USGS itself so get it [there](https://water.usgs.gov/water-resources/software/MODFLOW-6/). _Only in this repo to make sharing easier_. 
+
 
 
 ## Background
@@ -21,20 +39,3 @@ when the extracted volume is smaller.
 - Discuss the uncertainties in your design.
 - Report and present your findings.
 
-# Explanation of repo
-
-- `bin` contains required moflow6 executable.
-- `Model` contains all the code.
-    - `basic_model*.ipynb` contains the initial model created, the two versions contain slightly different versions - makes working together with git easier.
-    - `changes_injection_scheme.ipynb` contains the code when injection scheme was altered to cater for the design requirements.
-    - `vary_kh_test_injection.ipynb` is the start of the sensitivity analysis. As this was slower in notebook, this was also implemented in a `.py` files.
-    - `vary_params.py` code to perform sensitivity analysis of hydraulic conductivity, porosity and coefficient of logitudinal dispersivity. 
-    - `worstcase*.ipynb` contains a variation on the basic model but in the worst case as a result of the sensitivity analysis
-    - `optimise_gw_model.py` used to optimise injection scheme the worst case, proved to be easier using seperate `.py` function. _Could_ optimise by adding this back in basic model. 
-- `Sources` contains pdfs of papers used (please cite correctly).
-- `Documents` contain initial workplan, final presentation and final report.
-
-## running code
-Advised to work in an anaconda environment with jupyter lab to run notebooks. 
-Use `pip install flopy` to obtain the [FloPy](https://github.com/avaframe/FlowPy) package. 
-The executable of modflow 6 is provided, strictly this should only be distribued by the USGS itself so get it [there](https://water.usgs.gov/water-resources/software/MODFLOW-6/). _Only in this repo to make sharing easier_. 
