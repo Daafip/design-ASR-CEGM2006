@@ -15,11 +15,11 @@ import datetime
 
 #### vary k & npor
 # k_lst = [10, 20, 30, 40]
-# k_lst = [10, 40]
-k_lst = [10]
+k_lst = [10, 25, 40]
+# k_lst = [10]
 # npor_lst = [0.2, 0.3, 0.4, 0.5]
-# npor_lst = [0.2, 0.5]
-npor_lst = [0.2]
+npor_lst = [0.2,0.35, 0.5]
+# npor_lst = [0.2]
 n_runs = len(k_lst) * len(npor_lst)
 alphaL = 0.5
 
@@ -30,7 +30,7 @@ alphaL = 0.5
 # n_runs = len(alphaL_lst)
 
 nlay = 20   #################
-n_years = 3 ################
+n_years = 10 ################
 cycle_n = np.arange(0, n_years,1)
 store_eff = np.zeros((n_runs,n_years))
 n_run = 0
@@ -335,6 +335,10 @@ for k in tqdm(k_lst):
         rec_eff_arr = np.array(rec_eff_lst)
         store_eff[n_run,:] = rec_eff_arr
         n_run+=1
+        time = str(datetime.datetime.now())[:-10].replace(":","_")
+        fname = fr'output/store_concentrations_k-{k}_npor-{npor}_alphaL-{alphaL}-nlay-{nlay}_{time}.nc'
+        ds = xr.DataArray(c_store_all,dims=['year','tstep','layer','r'])
+        ds.to_netcdf(fname,engine="netcdf4")
 
 time = str(datetime.datetime.now())[:-10].replace(":","_")
 np.savetxt(fr'output/model_output_{time}.txt',store_eff,delimiter=",")
