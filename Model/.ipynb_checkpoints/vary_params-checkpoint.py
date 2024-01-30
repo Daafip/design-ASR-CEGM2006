@@ -284,7 +284,7 @@ for k in tqdm(k_lst):
         times = np.array(cobj.get_times()) # get the times and convert to array
     
         t_end_index = len(times)
-        t_begin_index = int(0.7*len(times))
+        t_begin_index = nstepin
         climit = 1 # limit concentration, g/L
 
         time_break_lst = []
