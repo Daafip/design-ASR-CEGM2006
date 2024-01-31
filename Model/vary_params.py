@@ -41,7 +41,8 @@ for k in tqdm(k_lst):
 # for alphaL in tqdm(alphaL_lst):
         print(n_run,end="\n\n")
         Q_d = 40_000
-        Q_tot = Q_d * 1.25 ## Change this later as we actually want to produce this, currentlty we still have 80% loss
+        # Q_tot = Q_d * 1.25 ## Change this later as we actually want to produce this, currentlty we still have 80% loss
+        Q_tot = Q_d
         d_extrating = 62
         d_injecting = 365 - d_extrating ## change later for days with water excess
         # print(f'Need to pump {Q_tot/d_extrating:.2f}m^3/d to full fill demand') 
@@ -321,6 +322,7 @@ for k in tqdm(k_lst):
             
             cobj = gwt.output.concentration() # get handle to binary concentration file
             c_i = cobj.get_alldata().squeeze() # get the concentration data from the file
+            times = np.array(cobj.get_times()) # get the times and convert to array
             for itime in range(t_begin_index, t_end_index):
                 if c_i[itime,:, 0].mean() > climit:
                     time_break_lst.append(itime)
