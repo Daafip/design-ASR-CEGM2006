@@ -342,7 +342,7 @@ for k in tqdm(k_lst):
         store_eff[n_run,:] = rec_eff_arr
         n_run+=1
         time = str(datetime.datetime.now())[:-10].replace(":","_")
-        fname = fr'output/store_concentrations_k-{k}_npor-{npor}_alphaL-{alphaL}-nlay-{nlay}_nyears-{nyears}_{time}.nc'
+        fname = fr'output/store_concentrations_k-{k}_npor-{npor}_alphaL-{alphaL}-nlay-{nlay}_nyears-{n_years}_{time}.nc'
         ds = xr.DataArray(c_store_all,dims=['year','tstep','layer','r'])
         ds.to_netcdf(fname,engine="netcdf4")
 
