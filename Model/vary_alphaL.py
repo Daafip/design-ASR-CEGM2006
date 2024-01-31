@@ -273,18 +273,18 @@ for alphaL in tqdm(alphaL_lst):
                  filename=f"{modelname}.gwfgwt",
                 );
     
-    sim.write_simulation(silent=True)
-    success, _ = sim.run_simulation(silent=True) 
-    if success == 1:
-        print('Model solved successfully',end=" ")
-    else:
-        print('Solve failed')
+    # sim.write_simulation(silent=True)
+    # success, _ = sim.run_simulation(silent=True) 
+    # if success == 1:
+    #     print('Model solved successfully',end=" ")
+    # else:
+    #     print('Solve failed')
     
-    cobj = gwt.output.concentration() # get handle to binary concentration file
-    c = cobj.get_alldata().squeeze() # get the concentration data from the file
-    times = np.array(cobj.get_times()) # get the times and convert to array
+    # cobj = gwt.output.concentration() # get handle to binary concentration file
+    # c = cobj.get_alldata().squeeze() # get the concentration data from the file
+    # times = np.array(cobj.get_times()) # get the times and convert to array
 
-    t_end_index = len(times)
+    t_end_index =  nstepin+nstepout
     t_begin_index = nstepin
     climit = 1 # limit concentration, g/L
 

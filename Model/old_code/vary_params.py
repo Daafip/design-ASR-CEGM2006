@@ -276,24 +276,24 @@ for alphaL in alphaL_lst:
         # write model, solve model, and read concentration data
         sim.write_simulation(silent=True)
         success, _ = sim.run_simulation(silent=True) 
-        if success == 1:
-            print(f'Model solved successfully for {index_cycle}', end="\r")
-        else:
-            print('Solve failed')
-            break
+        # if success == 1:
+        #     print(f'Model solved successfully for {index_cycle}', end="\r")
+        # else:
+        #     print('Solve failed')
+        #     break
         
-        cobj = gwt.output.concentration() # get handle to binary concentration file
-        c_i = cobj.get_alldata().squeeze() # get the concentration data from the file
-        for itime in range(t_begin_index, t_end_index):
-            if c_i[itime, 0] > climit:
-                time_break_lst.append(itime)
-                break
+        # cobj = gwt.output.concentration() # get handle to binary concentration file
+        # c_i = cobj.get_alldata().squeeze() # get the concentration data from the file
+        # for itime in range(t_begin_index, t_end_index):
+        #     if c_i[itime, 0] > climit:
+        #         time_break_lst.append(itime)
+        #         break
     
-        c_arr[index_cycle+1] = c_i[itime - 1]
-        c_store_all[index_cycle] = c_i
-        rec_eff = ((times[itime - 1] - tin) * Q) / (tin * Q_in) # Q  needed as injection and extraction rates are not the same
-        rec_eff_lst.append(rec_eff*100)
-
+        # c_arr[index_cycle+1] = c_i[itime - 1]
+        # c_store_all[index_cycle] = c_i
+        # rec_eff = ((times[itime - 1] - tin) * Q) / (tin * Q_in) # Q  needed as injection and extraction rates are not the same
+        # rec_eff_lst.append(rec_eff*100)
+        
     
     
     cycle_n_arr = np.array(cycle_n) + 1

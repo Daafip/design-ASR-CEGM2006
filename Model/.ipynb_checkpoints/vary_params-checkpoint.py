@@ -16,11 +16,12 @@ import xarray as xr
 
 #### vary k & npor
 # k_lst = [10, 20, 30, 40]
-k_lst = [40]
+k_lst = [10, 35, 40]
+# k_lst = [40]
 # k_lst = [10]
 # npor_lst = [0.2, 0.3, 0.4, 0.5]
-# npor_lst = [0.2,0.35, 0.5]
-npor_lst = [0.5]
+npor_lst = [0.2,0.35, 0.5]
+# npor_lst = [0.5]
 n_runs = len(k_lst) * len(npor_lst)
 alphaL = 0.5
 
@@ -31,7 +32,7 @@ alphaL = 0.5
 # n_runs = len(alphaL_lst)
 
 nlay = 20   #################
-n_years = 10 ################
+n_years = 3 ################
 cycle_n = np.arange(0, n_years,1)
 store_eff = np.zeros((n_runs,n_years))
 n_run = 0
@@ -46,7 +47,7 @@ for k in tqdm(k_lst):
         # print(f'Need to pump {Q_tot/d_extrating:.2f}m^3/d to full fill demand') 
         
         # domain size and boundary conditions
-        R = 80 # length of domain, m #############################################3333
+        R = 200 # length of domain, m #############################################3333
         hR = 0 # head at r=R
         hL = hR
 
@@ -273,25 +274,25 @@ for k in tqdm(k_lst):
                      filename=f"{modelname}.gwfgwt",
                     );
         
-        sim.write_simulation(silent=True)
-        success, _ = sim.run_simulation(silent=True) 
-        if success == 1:
-            print('Model solved successfully',end=" ")
-        else:
-            print('Solve failed')
+        # sim.write_simulation(silent=True)
+        # success, _ = sim.run_simulation(silent=True) 
+        # if success == 1:
+        #     print('Model solved successfully',end=" ")
+        # else:
+        #     print('Solve failed')
         
-        cobj = gwt.output.concentration() # get handle to binary concentration file
-        c = cobj.get_alldata().squeeze() # get the concentration data from the file
-        times = np.array(cobj.get_times()) # get the times and convert to array
+        # cobj = gwt.output.concentration() # get handle to binary concentration file
+        # c = cobj.get_alldata().squeeze() # get the concentration data from the file
+        # times = np.array(cobj.get_times()) # get the times and convert to array
     
-        t_end_index = len(times)
+        t_end_index = nstepin + nstepout
         t_begin_index = nstepin
         climit = 1 # limit concentration, g/L
 
         time_break_lst = []
         rec_eff_lst = []
         cycle_n = np.arange(0, n_years,1)
-        c_arr = np.zeros((len(cycle_n)+1,nlay, ncol))
+        c_arr = np.zeros((len(cycle_n)+1, nlay, ncol))
         c_store_all = np.zeros((len(cycle_n), nstepin+nstepout,nlay,ncol))
         c_arr[0] = np.ones((nlay,ncol)) * cs
         c_prev = cs
@@ -329,15 +330,17 @@ for k in tqdm(k_lst):
             c_store_all[index_cycle] = c_i
             rec_eff = ((times[itime - 1] - tin) * Q) / (tin * Q_in) # Q  needed as injection and extraction rates are not the same
             rec_eff_lst.append(rec_eff*100)
-    
-        
-        
+            print(f'{k}_{npor}_{index_cycle}_{itime}_{rec_eff}')
+
+        print(rec_eff_lst)
+        print(time_break_lst)
         cycle_n_arr = np.array(cycle_n) + 1
         rec_eff_arr = np.array(rec_eff_lst)
+        print(rec_eff_arr)
         store_eff[n_run,:] = rec_eff_arr
         n_run+=1
         time = str(datetime.datetime.now())[:-10].replace(":","_")
-        fname = fr'output/store_concentrations_k-{k}_npor-{npor}_alphaL-{alphaL}-nlay-{nlay}_{time}.nc'
+        fname = fr'output/store_concentrations_k-{k}_npor-{npor}_alphaL-{alphaL}-nlay-{nlay}_nyears-{nyears}_{time}.nc'
         ds = xr.DataArray(c_store_all,dims=['year','tstep','layer','r'])
         ds.to_netcdf(fname,engine="netcdf4")
 
