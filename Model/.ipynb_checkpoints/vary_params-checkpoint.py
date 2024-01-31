@@ -58,7 +58,7 @@ for k in tqdm(k_lst):
         # npor = 0.35 # porosity, generally 0.25 - 0.5  ############# 0.25
         
         # flow
-        Q = Q_tot/d_extrating # extraction rate, m^3/d 
+        Q_out = Q_tot/d_extrating # extraction rate, m^3/d 
         Q_in = Q_tot / (d_injecting)# injection rate m^3/d
         
         # transport
@@ -165,8 +165,8 @@ for k in tqdm(k_lst):
         wellin = []
         wellout = []
         for ilay in range(nlay):
-            wellin.append([(ilay, 0, 0),  Q / nlay, cf])  # [(layer, row, col), U, concentration]
-            wellout.append([(ilay, 0, 0),  -Q / nlay, cf]) # specified concentration is not used, but must be specified 
+            wellin.append([(ilay, 0, 0),  Q_in / nlay, cf])  # [(layer, row, col), U, concentration]
+            wellout.append([(ilay, 0, 0),  -Q_out / nlay, cf]) # specified concentration is not used, but must be specified 
         wel_spd = {0: wellin, 1: wellout} # stress period data for periods 0 and 1
         gwf_wel = fp.mf6.ModflowGwfwel(model=gwf, 
                                        stress_period_data=wel_spd, 
@@ -330,7 +330,7 @@ for k in tqdm(k_lst):
         
             c_arr[index_cycle+1] = c_i[itime - 1,:]
             c_store_all[index_cycle] = c_i
-            rec_eff = ((times[itime - 1] - tin) * Q) / (tin * Q_in) # Q  needed as injection and extraction rates are not the same
+            rec_eff = ((times[itime - 1] - tin) * Q_out) / (tin * Q_in) # Q  needed as injection and extraction rates are not the same
             rec_eff_lst.append(rec_eff*100)
             print(f'{k}_{npor}_{index_cycle}_{itime}_{rec_eff}')
 
@@ -342,7 +342,7 @@ for k in tqdm(k_lst):
         store_eff[n_run,:] = rec_eff_arr
         n_run+=1
         time = str(datetime.datetime.now())[:-10].replace(":","_")
-        fname = fr'output/store_concentrations_k-{k}_npor-{npor}_alphaL-{alphaL}-nlay-{nlay}_nyears-{nyears}_{time}.nc'
+        fname = fr'output/store_concentrations_k-{k}_npor-{npor}_alphaL-{alphaL}-nlay-{nlay}_nyears-{n_years}_{time}.nc'
         ds = xr.DataArray(c_store_all,dims=['year','tstep','layer','r'])
         ds.to_netcdf(fname,engine="netcdf4")
 

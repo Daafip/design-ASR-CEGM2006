@@ -40,7 +40,7 @@ def run_model_mp(params):
     # npor = 0.35 # porosity, generally 0.25 - 0.5  ############# 0.25
     
     # flow
-    Q = Q_tot/d_extrating # extraction rate, m^3/d 
+    Q_out = Q_tot/d_extrating # extraction rate, m^3/d 
     Q_in = Q_tot / (d_injecting)# injection rate m^3/d
     
     # transport
@@ -147,8 +147,8 @@ def run_model_mp(params):
     wellin = []
     wellout = []
     for ilay in range(nlay):
-        wellin.append([(ilay, 0, 0),  Q / nlay, cf])  # [(layer, row, col), U, concentration]
-        wellout.append([(ilay, 0, 0),  -Q / nlay, cf]) # specified concentration is not used, but must be specified 
+        wellin.append([(ilay, 0, 0),  Q_in / nlay, cf])  # [(layer, row, col), U, concentration]
+        wellout.append([(ilay, 0, 0),  -Q_out / nlay, cf]) # specified concentration is not used, but must be specified 
     wel_spd = {0: wellin, 1: wellout} # stress period data for periods 0 and 1
     gwf_wel = fp.mf6.ModflowGwfwel(model=gwf, 
                                    stress_period_data=wel_spd, 
@@ -310,7 +310,7 @@ def run_model_mp(params):
     
         c_arr[index_cycle+1] = c_i[itime - 1,:]
         c_store_all[index_cycle] = c_i
-        rec_eff = ((times[itime - 1] - tin) * Q) / (tin * Q_in) # Q  needed as injection and extraction rates are not the same
+        rec_eff = ((times[itime - 1] - tin) * Q_out) / (tin * Q_in) # Q  needed as injection and extraction rates are not the same
         rec_eff_lst.append(rec_eff*100)
         print(f'{k}_{npor}_{index_cycle}_{itime}_{rec_eff}')
         rec_eff_lst.append((k+npor+index_cycle))
@@ -333,7 +333,7 @@ from tqdm.contrib.concurrent import thread_map
 #     #### vary k & npor
 k_lst = [10, 35, 40]
 npor_lst = [0.2,0.35, 0.5]
-result = thread_map(run_model_mp, [[k,n] for k in k_lst for n in npor_lst], max_workers=8)
+result = thread_map(run_model_mp, [[k,n] for k in k_lst for n in npor_lst], max_workers=6)
 
 print(result)
 store_eff =  np.zeros((len(result),len(result[0])))
