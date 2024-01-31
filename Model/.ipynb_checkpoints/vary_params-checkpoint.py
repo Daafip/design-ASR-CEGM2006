@@ -12,6 +12,7 @@ from tqdm import tqdm
 import warnings
 warnings.simplefilter(action='ignore', category=DeprecationWarning)
 import datetime
+import xarray as xr
 
 #### vary k & npor
 # k_lst = [10, 20, 30, 40]
@@ -98,7 +99,7 @@ for k in tqdm(k_lst):
         nstepout = round(tout / delt) # computed number of steps during extraction, integer
         
         # model name and workspace
-        modelname = f'modelrad_{k}_{str(npor).split(".")[-1]}' # name of model
+        modelname = f'modelrad__{k}_{str(npor).split(".")[-1]}' # name of model
         gwfname = modelname + 'f' # name of flow model
         gwtname = modelname + 't' # name of transport model
         modelws = './' + modelname # model workspace to be used
@@ -335,10 +336,10 @@ for k in tqdm(k_lst):
         rec_eff_arr = np.array(rec_eff_lst)
         store_eff[n_run,:] = rec_eff_arr
         n_run+=1
-        time = str(datetime.datetime.now())[:-10].replace(":","_")
-        fname = fr'output/store_concentrations_k-{k}_npor-{npor}_alphaL-{alphaL}-nlay-{nlay}_{time}.nc'
-        ds = xr.DataArray(c_store_all,dims=['year','tstep','layer','r'])
-        ds.to_netcdf(fname,engine="netcdf4")
+        # time = str(datetime.datetime.now())[:-10].replace(":","_")
+        # fname = fr'output/store_concentrations_k-{k}_npor-{npor}_alphaL-{alphaL}-nlay-{nlay}_{time}.nc'
+        # ds = xr.DataArray(c_store_all,dims=['year','tstep','layer','r'])
+        # ds.to_netcdf(fname,engine="netcdf4")
 
 time = str(datetime.datetime.now())[:-10].replace(":","_")
 np.savetxt(fr'output/model_output_{time}.txt',store_eff,delimiter=",")
