@@ -19,7 +19,7 @@ def run_model_mp(params):
     k, npor  = params[0],params[1]
     alphaL = 0.5
     nlay = 20   #################
-    n_years = 3 ################
+    n_years = 10 ################
     cycle_n = np.arange(0, n_years,1)
     # print(n_run,end="\n\n")
     Q_d = 40_000
@@ -313,17 +313,16 @@ def run_model_mp(params):
         rec_eff = ((times[itime - 1] - tin) * Q_out) / (tin * Q_in) # Q  needed as injection and extraction rates are not the same
         rec_eff_lst.append(rec_eff*100)
         print(f'{k}_{npor}_{index_cycle}_{itime}_{rec_eff}')
-        rec_eff_lst.append((k+npor+index_cycle))
 
     print(rec_eff_lst)
     print(time_break_lst)
     cycle_n_arr = np.array(cycle_n) + 1
     rec_eff_arr = np.array(rec_eff_lst)
     print(rec_eff_arr)
-    # time = str(datetime.datetime.now())[:-10].replace(":","_")
-    # fname = fr'output/store_concentrations_k-{k}_npor-{npor}_alphaL-{alphaL}-nlay-{nlay}_nyears-{n_years}_{time}.nc'
-    # ds = xr.DataArray(c_store_all,dims=['year','tstep','layer','r'])
-    # ds.to_netcdf(fname,engine="netcdf4")
+    time = str(datetime.datetime.now())[:-10].replace(":","_")
+    fname = fr'output/store_concentrations_k-{k}_npor-{npor}_alphaL-{alphaL}-nlay-{nlay}_nyears-{n_years}_{time}.nc'
+    ds = xr.DataArray(c_store_all,dims=['year','tstep','layer','r'])
+    ds.to_netcdf(fname,engine="netcdf4")
     return  rec_eff_arr
 
 
