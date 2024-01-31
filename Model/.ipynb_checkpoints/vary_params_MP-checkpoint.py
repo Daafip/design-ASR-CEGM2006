@@ -30,7 +30,7 @@ def run_model_mp(params):
     # print(f'Need to pump {Q_tot/d_extrating:.2f}m^3/d to full fill demand') 
     
     # domain size and boundary conditions
-    R = 200 # length of domain, m #############################################3333
+    R = 300 # length of domain, m #############################################3333
     hR = 0 # head at r=R
     hL = hR
 
