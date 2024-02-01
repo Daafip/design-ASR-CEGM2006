@@ -334,7 +334,7 @@ from tqdm.contrib.concurrent import thread_map
 #     #### vary k & npor
 k_lst = [10, 25, 40]
 npor_lst = [0.2,0.35, 0.5]
-result = thread_map(run_model_mp, [[k,n] for k in k_lst for n in npor_lst], max_workers=5)
+result = thread_map(run_model_mp, [[k,n] for k in k_lst for n in npor_lst], max_workers=6)
 
 print(result)
 store_eff =  np.zeros((len(result),len(result[0])))

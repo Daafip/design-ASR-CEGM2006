@@ -84,7 +84,7 @@ def run_model_alphaL_mp(params):
     nstepout = round(tout / delt) # computed number of steps during extraction, integer
     
     # model name and workspace
-    modelname = f'modelrad__{k}_{str(npor).split(".")[-1]}' # name of model
+    modelname = f'modelrad_a-{alphaL}' # name of model
     gwfname = modelname + 'f' # name of flow model
     gwtname = modelname + 't' # name of transport model
     modelws = './' + modelname # model workspace to be used
@@ -334,7 +334,7 @@ from tqdm.contrib.concurrent import thread_map
 # if __name__ == '__main__':
 #     #### vary k & npor
 alphaL_lst = [0.5, 1.25, 2]
-result = thread_map(run_model_alphaL_mp, [alphaL for alphaL in alphaL_lst], max_workers=3)
+result = thread_map(run_model_alphaL_mp, [alphaL for alphaL in alphaL_lst], max_workers=6)
 
 print(result)
 store_eff =  np.zeros((len(result),len(result[0])))
@@ -342,7 +342,7 @@ for index, r in enumerate(result):
     store_eff[index, :] = r
     
 time = str(datetime.datetime.now())[:-10].replace(":","_")
-np.savetxt(fr'output/model_output_{time}.txt',store_eff,delimiter=",")
-params = np.array(k_lst + npor_lst)
-np.savetxt(fr'output/parameter_output_{time}.txt',params,delimiter=",")
+np.savetxt(fr'output/model_alpha_output_{time}.txt',store_eff,delimiter=",")
+params = np.array(alphaL_lst)
+np.savetxt(fr'output/parameter_alpha_output_{time}.txt',params,delimiter=",")
 print('DONE!')
