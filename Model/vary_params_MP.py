@@ -323,6 +323,8 @@ def run_model_mp(params):
     fname = fr'output/store_concentrations_k-{k}_npor-{npor}_alphaL-{alphaL}-nlay-{nlay}_nyears-{n_years}_{time}.nc'
     ds = xr.DataArray(c_store_all,dims=['year','tstep','layer','r'])
     ds.to_netcdf(fname,engine="netcdf4")
+    ds.close()
+    del(c_store_all)
     return  rec_eff_arr
 
 
@@ -332,7 +334,7 @@ from tqdm.contrib.concurrent import thread_map
 #     #### vary k & npor
 k_lst = [10, 25, 40]
 npor_lst = [0.2,0.35, 0.5]
-result = thread_map(run_model_mp, [[k,n] for k in k_lst for n in npor_lst], max_workers=6)
+result = thread_map(run_model_mp, [[k,n] for k in k_lst for n in npor_lst], max_workers=5)
 
 print(result)
 store_eff =  np.zeros((len(result),len(result[0])))
