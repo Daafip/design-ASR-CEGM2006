@@ -330,7 +330,7 @@ def run_model_mp(params):
 from tqdm.contrib.concurrent import thread_map
 # if __name__ == '__main__':
 #     #### vary k & npor
-k_lst = [10, 35, 40]
+k_lst = [10, 25, 40]
 npor_lst = [0.2,0.35, 0.5]
 result = thread_map(run_model_mp, [[k,n] for k in k_lst for n in npor_lst], max_workers=6)
 
