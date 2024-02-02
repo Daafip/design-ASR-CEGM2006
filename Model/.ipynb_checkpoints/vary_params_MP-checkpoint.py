@@ -13,7 +13,8 @@ import warnings
 warnings.simplefilter(action='ignore', category=DeprecationWarning)
 import datetime
 import xarray as xr
-from tqdm.contrib.concurrent import process_map  # or thread_map
+# from tqdm.contrib.concurrent import process_map  # or thread_map
+from tqdm.contrib.concurrent import thread_map
 
 def run_model_mp(params):
     k, npor  = params[0],params[1]
@@ -328,13 +329,11 @@ def run_model_mp(params):
     return  rec_eff_arr
 
 
-
-from tqdm.contrib.concurrent import thread_map
-# if __name__ == '__main__':
-#     #### vary k & npor
 k_lst = [10, 25, 40]
 npor_lst = [0.2,0.35, 0.5]
 result = thread_map(run_model_mp, [[k,n] for k in k_lst for n in npor_lst], max_workers=6)
+### this did give an error ^ - something with multipocessing and modflow, the non Multi Processsing (MP) version should be stable
+### investigate effect on using same instance of mf6.exe
 
 print(result)
 store_eff =  np.zeros((len(result),len(result[0])))

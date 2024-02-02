@@ -13,40 +13,25 @@ import warnings
 warnings.simplefilter(action='ignore', category=DeprecationWarning)
 import datetime
 import xarray as xr
+from tqdm.contrib.concurrent import process_map  # or thread_map
 
-#### vary k & npor
-# k_lst = [10, 20, 30, 40]
-# k_lst = [10, 25, 40]
-# k_lst = [10]
-# npor_lst = [0.2, 0.3, 0.4, 0.5]
-# npor_lst = [0.2,0.35, 0.5]
-# npor_lst = [0.2]
-# n_runs = len(k_lst) * len(npor_lst)
-# alphaL = 0.5
-
-#### vary alphaL
-npor = 0.35
-k = 25
-alphaL_lst = [0.5, 1.25, 2]
-n_runs = len(alphaL_lst)
-
-nlay = 20   #################
-n_years = 10 ################
-cycle_n = np.arange(0, n_years,1)
-store_eff = np.zeros((n_runs,n_years))
-n_run = 0
-# for k in tqdm(k_lst):
-#     for npor in npor_lst:
-for alphaL in tqdm(alphaL_lst):
-    print(n_run,end="\n\n")
+def run_model_alphaL_mp(params):
+    k = 10
+    npor = 0.5
+    alphaL = params
+    nlay = 20   #################
+    n_years = 10 ################
+    cycle_n = np.arange(0, n_years,1)
+    # print(n_run,end="\n\n")
     Q_d = 40_000
-    Q_tot = Q_d * 1.25 ## Change this later as we actually want to produce this, currentlty we still have 80% loss
+    # Q_tot = Q_d * 1.25 ## Change this later as we actually want to produce this, currentlty we still have 80% loss
+    Q_tot = Q_d
     d_extrating = 62
     d_injecting = 365 - d_extrating ## change later for days with water excess
     # print(f'Need to pump {Q_tot/d_extrating:.2f}m^3/d to full fill demand') 
     
     # domain size and boundary conditions
-    R = 80 # length of domain, m #############################################3333
+    R = 300 # length of domain, m #############################################3333
     hR = 0 # head at r=R
     hL = hR
 
@@ -99,7 +84,7 @@ for alphaL in tqdm(alphaL_lst):
     nstepout = round(tout / delt) # computed number of steps during extraction, integer
     
     # model name and workspace
-    modelname = f'modelrad_a{k}_{str(npor).split(".")[-1]}' # name of model
+    modelname = f'modelrad_a-{alphaL}' # name of model
     gwfname = modelname + 'f' # name of flow model
     gwtname = modelname + 't' # name of transport model
     modelws = './' + modelname # model workspace to be used
@@ -284,14 +269,14 @@ for alphaL in tqdm(alphaL_lst):
     # c = cobj.get_alldata().squeeze() # get the concentration data from the file
     # times = np.array(cobj.get_times()) # get the times and convert to array
 
-    t_end_index =  nstepin+nstepout
+    t_end_index = nstepin + nstepout
     t_begin_index = nstepin
     climit = 1 # limit concentration, g/L
 
     time_break_lst = []
     rec_eff_lst = []
     cycle_n = np.arange(0, n_years,1)
-    c_arr = np.zeros((len(cycle_n)+1,nlay, ncol))
+    c_arr = np.zeros((len(cycle_n)+1, nlay, ncol))
     c_store_all = np.zeros((len(cycle_n), nstepin+nstepout,nlay,ncol))
     c_arr[0] = np.ones((nlay,ncol)) * cs
     c_prev = cs
@@ -306,8 +291,6 @@ for alphaL in tqdm(alphaL_lst):
                                      strt=c_arr[index_cycle], # initial concentration
                                      ) 
         # here also change the injection after the first two years. 
-    
-        
         # write model, solve model, and read concentration data
         sim.write_simulation(silent=True)
         success, _ = sim.run_simulation(silent=True) 
@@ -320,6 +303,7 @@ for alphaL in tqdm(alphaL_lst):
         
         cobj = gwt.output.concentration() # get handle to binary concentration file
         c_i = cobj.get_alldata().squeeze() # get the concentration data from the file
+        times = np.array(cobj.get_times()) # get the times and convert to array
         for itime in range(t_begin_index, t_end_index):
             if c_i[itime,:, 0].mean() > climit:
                 time_break_lst.append(itime)
@@ -329,20 +313,36 @@ for alphaL in tqdm(alphaL_lst):
         c_store_all[index_cycle] = c_i
         rec_eff = ((times[itime - 1] - tin) * Q_out) / (tin * Q_in) # Q  needed as injection and extraction rates are not the same
         rec_eff_lst.append(rec_eff*100)
+        print(f'{k}_{npor}_{index_cycle}_{itime}_{rec_eff}')
 
-    
-    
+    print(rec_eff_lst)
+    print(time_break_lst)
     cycle_n_arr = np.array(cycle_n) + 1
     rec_eff_arr = np.array(rec_eff_lst)
-    store_eff[n_run,:] = rec_eff_arr
-    n_run+=1
-    # time = str(datetime.datetime.now())[:-10].replace(":","_")
-    # fname = fr'output/store_concentrations_k-{k}_npor-{npor}_alphaL-{alphaL}-nlay-{nlay}_{time}.nc'
-    # ds = xr.DataArray(c_store_all,dims=['year','tstep','layer','r'])
-    # ds.to_netcdf(fname,engine="netcdf4")
+    print(rec_eff_arr)
+    time = str(datetime.datetime.now())[:-10].replace(":","_")
+    fname = fr'output/store_concentrations_k-{k}_npor-{npor}_alphaL-{alphaL}-nlay-{nlay}_nyears-{n_years}_{time}.nc'
+    ds = xr.DataArray(c_store_all,dims=['year','tstep','layer','r'])
+    ds.to_netcdf(fname,engine="netcdf4")
+    ds.close()
+    del(c_store_all)
+    return  rec_eff_arr
+    
 
+alphaL_lst = [0.5, 1.25, 2]
+result = []
+
+for alphaL in alphaL_lst: 
+    result.append(run_model_alphaL_mp(alphaL))
+## this hould be stable
+
+print(result)
+store_eff =  np.zeros((len(result),len(result[0])))
+for index, r in enumerate(result):
+    store_eff[index, :] = r
+    
 time = str(datetime.datetime.now())[:-10].replace(":","_")
-np.savetxt(fr'output/model_alphaL_output_{time}.txt',store_eff,delimiter=",")
+np.savetxt(fr'output/model_alpha_output_{time}.txt',store_eff,delimiter=",")
 params = np.array(alphaL_lst)
-np.savetxt(fr'output/parameter_alphaL_output_{time}.txt',params,delimiter=",")
+np.savetxt(fr'output/parameter_alpha_output_{time}.txt',params,delimiter=",")
 print('DONE!')

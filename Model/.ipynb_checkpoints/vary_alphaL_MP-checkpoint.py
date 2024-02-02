@@ -329,12 +329,11 @@ def run_model_alphaL_mp(params):
     return  rec_eff_arr
 
 
-
-from tqdm.contrib.concurrent import thread_map
-# if __name__ == '__main__':
-#     #### vary k & npor
 alphaL_lst = [0.5, 1.25, 2]
 result = thread_map(run_model_alphaL_mp, [alphaL for alphaL in alphaL_lst], max_workers=6)
+### this CAN give an error ^ - something with multipocessing and modflow/maxworkers, the non Multi Processsing (MP) version should be stable
+### ran fine last time for me
+### investigate effect on using same instance of mf6.exe
 
 print(result)
 store_eff =  np.zeros((len(result),len(result[0])))
