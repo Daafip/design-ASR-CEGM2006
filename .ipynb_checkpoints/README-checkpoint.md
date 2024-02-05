@@ -13,7 +13,7 @@ Designing an ASR system for the cross over course Subsurface storage for climate
     - `5. Vary_params_plotting_buoy_ml.ipynb` used to plot the results form the varying python script.
     - `6. adjust_injection_scheme_buoy_ml.ipynb` used to optimise injection scheme - run it to actually produce the desired volume. 
     - `7. Calculate_max_injection_extraction.ipynb` calculates max injection and extraction using emperical formulae. 
-- `Sources` contains pdfs of papers used (please cite correctly if used).
+- `Sources` contains pdfs of papers used (please cite correctly).
 - `Documents` contain initial workplan, final presentation and final report.
 
 ## running code
